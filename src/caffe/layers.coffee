@@ -355,8 +355,8 @@ class @InterpLayer
         params = attribs?.interp_param
         if not params?
             throw 'Interp layer must have interp_param.'
-        if not (param.height? or param.width)
-            @outSize = [param.height, param.width]
+        if not (params.height? or params.width)
+            @outSize = [params.height, params.width]
         else
             @outSize = null
         @zoom_factor = getValueOrDefault params.zoom_factor, null
