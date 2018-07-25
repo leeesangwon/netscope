@@ -352,7 +352,9 @@ layers.Interp =
 class @InterpLayer
     constructor: (attribs) ->
         @spatialDimSize = 2
-        params = attribs.interp_param
+        params = attribs?.interp_param
+        if not params?
+            throw 'Interp layer must have interp_param.'
         if not (param.height? or param.width)
             @outSize = [param.height, param.width]
         else

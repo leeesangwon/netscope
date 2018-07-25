@@ -1096,7 +1096,10 @@ layers.Interp = this.InterpLayer = (function() {
     this.inferShapes = bind(this.inferShapes, this);
     var params;
     this.spatialDimSize = 2;
-    params = attribs.interp_param;
+    params = attribs != null ? attribs.interp_param : void 0;
+    if (params == null) {
+      throw 'Interp layer must have interp_param.';
+    }
     if (!((param.height != null) || param.width)) {
       this.outSize = [param.height, param.width];
     } else {
