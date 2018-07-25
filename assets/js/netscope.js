@@ -1100,7 +1100,7 @@ layers.Interp = this.InterpLayer = (function() {
     if (params == null) {
       throw 'Interp layer must have interp_param.';
     }
-    if (!((params.height != null) || (params.width != null))) {
+    if ((params.height != null) && (params.width != null)) {
       this.outSize = [params.height, params.width];
     } else {
       this.outSize = null;
@@ -1119,7 +1119,7 @@ layers.Interp = this.InterpLayer = (function() {
     outputShape = inputShape.slice(0);
     for (i = j = 0, ref = this.spatialDimSize; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
       ii = inputShape.length - this.spatialDimSize + i;
-      if (this.outSize[i] !== 0) {
+      if (this.outSize != null) {
         outDim = this.outSize[i];
       } else if (this.zoom_factor != null) {
         outDim = inputShape[ii] + (inputShape[ii] - 1) * (this.zoom_factor - 1);

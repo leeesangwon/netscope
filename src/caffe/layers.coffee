@@ -355,7 +355,7 @@ class @InterpLayer
         params = attribs?.interp_param
         if not params?
             throw 'Interp layer must have interp_param.'
-        if not (params.height? or params.width?)
+        if (params.height? and params.width?)
             @outSize = [params.height, params.width]
         else
             @outSize = null
@@ -369,7 +369,7 @@ class @InterpLayer
         outputShape = inputShape[..]
         for i in [0...@spatialDimSize]
             ii = inputShape.length - @spatialDimSize + i
-            if @outSize[i] isnt 0
+            if @outSize?
                 outDim = @outSize[i]
             else if @zoom_factor?
                 outDim = inputShape[ii] + (inputShape[ii] - 1) * (@zoom_factor - 1)
