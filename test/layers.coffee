@@ -149,6 +149,26 @@ runCropTasks = (tasks) ->
         return text
     runLayerTasks tasks, makeCropTaskName, compareCropOutput
 
+runInterpTasks = (tasks) ->
+    makeCaffeInterpParams = (height, width, zoom_factor, shrink_factor) ->
+        params = { }
+        params.height = height if height?
+        params.width = width if width?
+        params.zoom_factor = zoom_factor if zoom_factor?
+        params.shrink_factor = shrink_factor if shrink_factor?
+        return { interp_param: params }
+    compareInterpOutput = (task) ->
+        compareLayerOutput layers.InterpLayer, makeCaffeInterpParams, task
+    makeInterpTaskName = (task) ->
+        [inputShapes, outputShape, axis] = task
+        return  'from ['
+        for shape in inputShapes
+            text += " [ #{shape} ]"
+        text += " ] to #{outputShape}"
+        text += " where axis = #{axis}" if axis?
+        return text
+    runLayerTasks tasks, makeInterpTaskName, compareInterpOutput
+
 describe 'Compute 2D Convolution output shape', ->
     # [ input shape, expecting output shape ]
     # null means default parameter value
@@ -314,3 +334,14 @@ describe 'Compute Crop output shape', ->
     ]
     runCropTasks tasks
 
+describe 'Compute Interp output shape', ->
+    # [ input shape, expecting output shape ]
+    shapes1 = (p) -> [ [1, 192, 473, 473], [1, 192, 60, 60], p ]
+    shapes2 = (p) -> [ [1, 192, 60, 60], [1, 192, 473, 473], p ]
+    # [ height, width, zoom_factor, shrink_factor ]
+    tasks = [
+        shapes1 [  60 ,  60 , null, null ]
+        shapes1 [ null, null, null,   8  ]
+        shapes2 [  473,  473, null, null ]
+        shapes2 [ null, null,   8 , null ]
+    ]
