@@ -414,7 +414,8 @@ isUniformLayer = (lt) ->
     (/dropout/i.test   lt) or
     (/batchnorm/i.test lt) or
     (/mvn/i.test       lt) or
-    (/softmax/i.test   lt)
+    (/softmax/i.test   lt) or
+    (/BN/i.test        lt)
 
 getLayerType = (layerTypeName) ->
     if isUniformLayer layerTypeName
