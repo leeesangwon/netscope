@@ -1134,10 +1134,10 @@ layers.Interp = this.InterpLayer = (function() {
   };
 
   InterpLayer.prototype.checkParameters = function(bottoms, tops) {
-    if ((this.shrink_factor == null) && this.shrink_factor < 1) {
+    if ((this.shrink_factor != null) && this.shrink_factor < 1) {
       throw 'Shrink factor must be positive.';
     }
-    if ((this.zoom_factor == null) && this.zoom_factor < 1) {
+    if ((this.zoom_factor != null) && this.zoom_factor < 1) {
       throw 'Zoom factor must be positive.';
     }
     if (bottoms == null) {

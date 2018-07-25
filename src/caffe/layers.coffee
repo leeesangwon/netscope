@@ -381,9 +381,9 @@ class @InterpLayer
         tops[0].shape = outputShape
     
     checkParameters: (bottoms, tops) =>
-        if not @shrink_factor? and @shrink_factor < 1
+        if @shrink_factor? and @shrink_factor < 1
             throw 'Shrink factor must be positive.'
-        if not @zoom_factor? and @zoom_factor < 1
+        if @zoom_factor? and @zoom_factor < 1
             throw 'Zoom factor must be positive.'
         unless bottoms?
             throw 'Interp layer received undefined bottom blobs.'
