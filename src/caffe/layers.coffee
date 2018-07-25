@@ -348,6 +348,45 @@ class @CropLayer
         if bottoms?.length != 2
             throw 'Crop layer must have exactly two bottom blobs.'
 
+layers.Interp =
+class @InterpLayer
+    constructor: (attribs) ->
+        @spatialDimSize = 2
+        params = attribs.interp_param
+        if not (param.height? or param.width)
+            @outSize = [param.height, param.width]
+        else
+            @outSize = null
+        @zoom_factor = getValueOrDefault params.zoom_factor, null
+        @shrink_factor = getValueOrDefault params.shrink_factor, null
+    
+    inferShapes: (bottoms, tops) =>
+        unless tops?[0]? then return
+        @checkParameters bottoms, tops
+        inputShape = bottoms[0].shape
+        outputShape = inputShape[..]
+        for i in [0...@spatialDimSize]
+            ii = inputShape.length - @spatialDimSize + i
+            if @outSize[i] isnt 0
+                outDim = @outSize[i]
+            else if @zoom_factor?
+                outDim = inputShape[ii] + (inputShape[ii] - 1) * (@zoom_factor - 1)
+            else if @shrink_factor?
+                outDim = Math.floor((inputShape[ii] - 1) / @shrink_factor) + 1
+            else
+                throw "Not enough interp_param."
+            outputShape[ii] = outDim
+        tops[0].shape = outputShape
+    
+    checkParameters: (bottoms, tops) =>
+        if not @shrink_factor? and @shrink_factor < 1
+            throw 'Shrink factor must be positive.'
+        if not @zoom_factor? and @zoom_factor < 1
+            throw 'Zoom factor must be positive.'
+        unless bottoms?
+            throw 'Interp layer received undefined bottom blobs.'
+
+
 isLossLayer = (layerType) ->
     /loss/i.test layerType
 

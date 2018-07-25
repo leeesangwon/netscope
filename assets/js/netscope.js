@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 var AppController, Editor, Notify, Renderer,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   slice = [].slice;
@@ -1087,6 +1087,62 @@ layers.Crop = this.CropLayer = (function() {
   };
 
   return CropLayer;
+
+})();
+
+layers.Interp = this.InterpLayer = (function() {
+  function InterpLayer(attribs) {
+    this.checkParameters = bind(this.checkParameters, this);
+    this.inferShapes = bind(this.inferShapes, this);
+    var params;
+    this.spatialDimSize = 2;
+    params = attribs.interp_param;
+    if (!((param.height != null) || param.width)) {
+      this.outSize = [param.height, param.width];
+    } else {
+      this.outSize = null;
+    }
+    this.zoom_factor = getValueOrDefault(params.zoom_factor, null);
+    this.shrink_factor = getValueOrDefault(params.shrink_factor, null);
+  }
+
+  InterpLayer.prototype.inferShapes = function(bottoms, tops) {
+    var i, ii, inputShape, j, outDim, outputShape, ref;
+    if ((tops != null ? tops[0] : void 0) == null) {
+      return;
+    }
+    this.checkParameters(bottoms, tops);
+    inputShape = bottoms[0].shape;
+    outputShape = inputShape.slice(0);
+    for (i = j = 0, ref = this.spatialDimSize; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+      ii = inputShape.length - this.spatialDimSize + i;
+      if (this.outSize[i] !== 0) {
+        outDim = this.outSize[i];
+      } else if (this.zoom_factor != null) {
+        outDim = inputShape[ii] + (inputShape[ii] - 1) * (this.zoom_factor - 1);
+      } else if (this.shrink_factor != null) {
+        outDim = Math.floor((inputShape[ii] - 1) / this.shrink_factor) + 1;
+      } else {
+        throw "Not enough interp_param.";
+      }
+      outputShape[ii] = outDim;
+    }
+    return tops[0].shape = outputShape;
+  };
+
+  InterpLayer.prototype.checkParameters = function(bottoms, tops) {
+    if ((this.shrink_factor == null) && this.shrink_factor < 1) {
+      throw 'Shrink factor must be positive.';
+    }
+    if ((this.zoom_factor == null) && this.zoom_factor < 1) {
+      throw 'Zoom factor must be positive.';
+    }
+    if (bottoms == null) {
+      throw 'Interp layer received undefined bottom blobs.';
+    }
+  };
+
+  return InterpLayer;
 
 })();
 
