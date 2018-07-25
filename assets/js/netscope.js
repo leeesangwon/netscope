@@ -1100,7 +1100,7 @@ layers.Interp = this.InterpLayer = (function() {
     if (params == null) {
       throw 'Interp layer must have interp_param.';
     }
-    if (!((params.height != null) || params.width)) {
+    if (!((params.height != null) || (params.width != null))) {
       this.outSize = [params.height, params.width];
     } else {
       this.outSize = null;

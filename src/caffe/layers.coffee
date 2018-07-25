@@ -11,7 +11,7 @@ areShapesEqual = (x, y) ->
 getValueOrDefault = (param, defaultValue) ->
     if param? then param else defaultValue
 
-extractKernelSizes =(params) ->
+extractKernelSizes = (params) ->
     params.kernel_size or [ params.kernel_h, params.kernel_w ]
 
 extractPaddingSizes = (params) ->
@@ -355,7 +355,7 @@ class @InterpLayer
         params = attribs?.interp_param
         if not params?
             throw 'Interp layer must have interp_param.'
-        if not (params.height? or params.width)
+        if not (params.height? or params.width?)
             @outSize = [params.height, params.width]
         else
             @outSize = null
