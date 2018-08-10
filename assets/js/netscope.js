@@ -675,7 +675,7 @@ layers.Data = this.DataLayer = (function() {
   };
 
   DataLayer.prototype.tryExtractShapeFromTransformParam = function(attribs) {
-    var channels, cropSize, ref;
+    var channels, cropSize, crop_height, crop_width, ref, ref1, ref2;
     cropSize = (ref = attribs.transform_param) != null ? ref.crop_size : void 0;
     if (cropSize != null) {
       channels = this.defaultChannels;
@@ -683,6 +683,15 @@ layers.Data = this.DataLayer = (function() {
         channels = 1;
       }
       return [this.defaultBatchSize, channels, cropSize, cropSize];
+    }
+    crop_height = (ref1 = attribs.transform_param) != null ? ref1.crop_height : void 0;
+    crop_width = (ref2 = attribs.transform_param) != null ? ref2.crop_width : void 0;
+    if ((crop_height != null) && (crop_width != null)) {
+      channels = this.defaultChannels;
+      if (attribs.transform_param.force_gray) {
+        channels = 1;
+      }
+      return [this.defaultBatchSize, channels, crop_height, crop_width];
     }
   };
 

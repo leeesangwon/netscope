@@ -106,6 +106,12 @@ class @DataLayer
             channels = @defaultChannels
             channels = 1 if attribs.transform_param.force_gray
             return [@defaultBatchSize, channels, cropSize, cropSize]
+        crop_height = attribs.transform_param?.crop_height
+        crop_width = attribs.transform_param?.crop_width
+        if crop_height? and crop_width?
+            channels = @defaultChannels
+            channels = 1 if attribs.transform_param.force_gray
+            return [@defaultBatchSize, channels, crop_height, crop_width]
 
     tryExtractShapeFromMemoryDataLayer: (attribs) =>
         param = attribs?.memory_data_param
