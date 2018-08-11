@@ -21,7 +21,7 @@ All included network models provided under their respective licenses.
 2. install node.js
 3. run Node.js command prompt
 4. move to netscope folder
-5. run
+5. download dependencies
 
     ```cmd
     npm install
@@ -29,7 +29,7 @@ All included network models provided under their respective licenses.
     ```
 
 6. edit coffeescript code
-7. run
+7. build
 
     ```cmd
     browserify -t coffeeify src/netscope.coffee -o assets/js/netscope.js
